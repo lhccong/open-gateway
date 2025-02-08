@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+dubbo:
+  application:
+    name: open-gateway-test
+    version: 1.0.0
+  registry:
+    timeout: 600000
+    #address: N/A 泛化调用不能使用此方式
+    address: zookeeper://127.0.0.1:2181
+  protocol:
+    name: dubbo
+    port: 20881
+  scan:
+    base-packages: com.cong.gateway.rpc
+

@@ -9,6 +9,13 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 
 public class SessionChannelInitializer extends ChannelInitializer<SocketChannel> {
+
+    private final Configuration configuration;
+
+    public SessionChannelInitializer(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     @Override
     protected void initChannel(SocketChannel channel) {
         ChannelPipeline line = channel.pipeline();
@@ -19,6 +26,6 @@ public class SessionChannelInitializer extends ChannelInitializer<SocketChannel>
         //聚合器 用于处理除了 GET 请求外的 POST 请求时候的对象信息
         line.addLast(new HttpObjectAggregator(1024 * 1024));
         //自定义处理器
-        line.addLast(new SessionServerHandler());
+        line.addLast(new SessionServerHandler(configuration));
     }
 }

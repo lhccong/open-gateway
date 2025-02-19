@@ -1,7 +1,8 @@
 package com.cong.gateway.session;
 
-import com.cong.gateway.bind.GenericReferenceRegistry;
 import com.cong.gateway.bind.IGenericReference;
+import com.cong.gateway.bind.MapperRegistry;
+import com.cong.gateway.mapping.HttpStatement;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
@@ -19,8 +20,8 @@ import java.util.Map;
  */
 public class Configuration {
 
-    private final GenericReferenceRegistry registry = new GenericReferenceRegistry(this);
-
+    private final MapperRegistry mapperRegistry = new MapperRegistry(this);
+    private final Map<String, HttpStatement> httpStatements = new HashMap<>();
     // RPC 应用服务配置项 open-gateway-test
     private final Map<String, ApplicationConfig> applicationConfigMap = new HashMap<>();
     // RPC 注册中心配置项 zookeeper://127.0.0.1:2181
@@ -60,12 +61,19 @@ public class Configuration {
         return referenceConfigMap.get(interfaceName);
     }
 
-    public void addGenericReference(String application, String interfaceName, String methodName) {
-        registry.registerGenericReference(application, interfaceName, methodName);
+    public void addMapper(HttpStatement httpStatement) {
+        mapperRegistry.addMapper(httpStatement);
     }
 
-    public IGenericReference getGenericReference(String methodName) {
-        return registry.getGenericReference(methodName);
+    public IGenericReference getMapper(String uri, GatewaySession gatewaySession) {
+        return mapperRegistry.getMapper(uri, gatewaySession);
     }
 
+    public HttpStatement getHttpStatement(String uri) {
+        return httpStatements.get(uri);
+    }
+
+    public void addHttpStatement(HttpStatement httpStatement) {
+        httpStatements.put(httpStatement.getUri(), httpStatement);
+    }
 }

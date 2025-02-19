@@ -1,4 +1,4 @@
-package com.cong.gateway.session;
+package com.cong.gateway.socket;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,3 +18,4 @@ public abstract class BaseHandler<T> extends SimpleChannelInboundHandler<T> {
 
     protected abstract void session(ChannelHandlerContext ctx, final Channel channel, T request);
 }
+

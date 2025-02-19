@@ -1,10 +1,11 @@
-package com.cong.gateway.session.handlers;
+package com.cong.gateway.socket.handlers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.cong.gateway.bind.IGenericReference;
-import com.cong.gateway.session.BaseHandler;
-import com.cong.gateway.session.Configuration;
+import com.cong.gateway.socket.BaseHandler;
+import com.cong.gateway.session.GatewaySession;
+import com.cong.gateway.session.defaults.DefaultGatewaySessionFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
@@ -17,14 +18,14 @@ import org.slf4j.LoggerFactory;
  * @author cong
  * @date 2025/02/07
  */
-public class SessionServerHandler extends BaseHandler<FullHttpRequest> {
+public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
 
-    private final Logger logger = LoggerFactory.getLogger(SessionServerHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(GatewayServerHandler.class);
 
-    private final Configuration configuration;
+    private final DefaultGatewaySessionFactory gatewaySessionFactory;
 
-    public SessionServerHandler(Configuration configuration) {
-        this.configuration = configuration;
+    public GatewayServerHandler(DefaultGatewaySessionFactory gatewaySessionFactory) {
+        this.gatewaySessionFactory = gatewaySessionFactory;
     }
 
 
@@ -32,11 +33,15 @@ public class SessionServerHandler extends BaseHandler<FullHttpRequest> {
     protected void session(ChannelHandlerContext ctx, Channel channel, FullHttpRequest request) {
         logger.info("网关接收请求 uri：{} method：{}", request.uri(), request.method());
         // 返回信息控制：简单处理
+        String uri = request.uri();
         String methodName = request.uri().substring(1);
-        if (methodName.equals("favicon.ico")) return;
+        if ("favicon.ico".equals(methodName)) {
+            return;
+        }
 
         // 服务泛化调用
-        IGenericReference reference = configuration.getGenericReference("hell1o");
+        GatewaySession gatewaySession = gatewaySessionFactory.openSession();
+        IGenericReference reference = gatewaySession.getMapper(uri);
         String result = reference.$invoke("cong") + " " + System.currentTimeMillis();
 
         // 返回信息处理

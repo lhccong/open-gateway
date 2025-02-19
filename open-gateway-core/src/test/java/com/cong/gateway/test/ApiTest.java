@@ -18,19 +18,6 @@ public class ApiTest {
 
     private final Logger logger = LoggerFactory.getLogger(ApiTest.class);
 
-//    @Test
-//    public void test_GenericReference() throws InterruptedException, ExecutionException {
-//        Configuration configuration = new Configuration();
-//        configuration.addGenericReference("open-gateway-test", "com.cong.gateway.rpc.IActivityBooth", "hello");
-//
-//        GenericReferenceSessionFactoryBuilder builder = new GenericReferenceSessionFactoryBuilder();
-//        Future<Channel> future = builder.build(configuration);
-//
-//        logger.info("服务启动完成 {}", future.get().id());
-//
-//        Thread.sleep(Long.MAX_VALUE);
-//    }
-
     @Test
     public void test_gateway() throws InterruptedException, ExecutionException {
         // 1. 创建配置信息加载注册
